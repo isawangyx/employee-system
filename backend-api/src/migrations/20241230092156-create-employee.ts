@@ -1,6 +1,6 @@
 import { QueryInterface, DataTypes } from "sequelize";
 
-module.exports = {
+export default {
   async up(queryInterface: QueryInterface) {
     await queryInterface.createTable("employees", {
       id: {
@@ -23,10 +23,12 @@ module.exports = {
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: DataTypes.NOW,
       },
     });
   },

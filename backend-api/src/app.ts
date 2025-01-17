@@ -3,11 +3,15 @@ import bodyParser from "body-parser";
 import employeeRoutes from "./routes/employee.routes";
 import sequelize from "./config/db_connection";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import authRoutes from "./routes/auth.routes";
 
 const app = express();
 const PORT = 8080;
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(cors());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -15,6 +19,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+app.use("/auth", authRoutes);
 app.use("/employee", employeeRoutes);
 
 app.listen(PORT, async () => {

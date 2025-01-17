@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-module.exports = {
+exports.default = {
     async up(queryInterface) {
         await queryInterface.createTable("employees", {
             id: {
@@ -24,10 +24,12 @@ module.exports = {
             createdAt: {
                 type: sequelize_1.DataTypes.DATE,
                 allowNull: false,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
             updatedAt: {
                 type: sequelize_1.DataTypes.DATE,
                 allowNull: false,
+                defaultValue: sequelize_1.DataTypes.NOW,
             },
         });
     },

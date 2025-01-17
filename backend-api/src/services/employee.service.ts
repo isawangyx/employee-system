@@ -1,10 +1,25 @@
+import Department from "../models/department.model";
 import Employee from "../models/employee.model";
 import EmployeeCreationAttributes from "../models/employee.model";
 
-export const getAllEmployee = async (page: number = 1, limit: number = 10) => {
+export const getEmployeesByDepartment = async (
+  departmentId: number,
+  page: number = 1,
+  limit: number = 10
+) => {
   const offset = (page - 1) * limit;
+
+  // Filter employees by departmentId
   const { rows: employees, count: totalEmployees } =
     await Employee.findAndCountAll({
+      where: departmentId == 1 ? {} : { departmentId },
+      include: [
+        {
+          model: Department,
+          as: "department",
+          attributes: ["name"],
+        },
+      ],
       limit,
       offset,
     });
@@ -12,8 +27,6 @@ export const getAllEmployee = async (page: number = 1, limit: number = 10) => {
   return {
     employees,
     totalEmployees,
-    currentPage: page,
-    totalPages: Math.ceil(totalEmployees / limit),
   };
 };
 

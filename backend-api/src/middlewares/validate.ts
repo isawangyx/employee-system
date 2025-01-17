@@ -9,7 +9,7 @@ export const validateEmployee = (
   const schema = Joi.object({
     name: Joi.string().required(),
     salary: Joi.number().required(),
-    department: Joi.string().valid("HR", "PS").required(),
+    departmentId: Joi.number().required(),
   });
 
   const { error } = schema.validate(req.body);

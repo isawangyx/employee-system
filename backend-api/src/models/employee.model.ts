@@ -4,15 +4,18 @@ import {
   Column,
   Model,
   DataType,
+  ForeignKey,
+  BelongsTo,
   CreatedAt,
   UpdatedAt,
 } from "sequelize-typescript";
+import Department from "./department.model";
 
 interface EmployeeAttributes {
   id: number;
   name: string;
   salary: number;
-  department: "HR" | "PS";
+  departmentId: number;
 }
 
 interface EmployeeCreationAttributes
@@ -46,11 +49,15 @@ export default class Employee extends Model<
   })
   declare salary: number;
 
+  @ForeignKey(() => Department)
   @Column({
-    type: DataType.ENUM("HR", "PS"),
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  declare department: "HR" | "PS";
+  declare departmentId: number;
+
+  @BelongsTo(() => Department)
+  department!: Department;
 
   @CreatedAt
   declare created_at: Date;

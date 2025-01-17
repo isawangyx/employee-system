@@ -3,22 +3,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEmployee = exports.updateEmployee = exports.createEmployee = exports.getEmployee = exports.getAllEmployee = void 0;
+exports.deleteEmployee = exports.updateEmployee = exports.createEmployee = exports.getEmployee = exports.getEmployeesByDepartment = void 0;
+const department_model_1 = __importDefault(require("../models/department.model"));
 const employee_model_1 = __importDefault(require("../models/employee.model"));
-const getAllEmployee = async (page = 1, limit = 10) => {
+const getEmployeesByDepartment = async (departmentId, page = 1, limit = 10) => {
     const offset = (page - 1) * limit;
+    // Filter employees by departmentId
     const { rows: employees, count: totalEmployees } = await employee_model_1.default.findAndCountAll({
+        where: departmentId == 1 ? {} : { departmentId },
+        include: [
+            {
+                model: department_model_1.default,
+                as: "department",
+                attributes: ["name"],
+            },
+        ],
         limit,
         offset,
     });
     return {
         employees,
         totalEmployees,
-        currentPage: page,
-        totalPages: Math.ceil(totalEmployees / limit),
     };
 };
-exports.getAllEmployee = getAllEmployee;
+exports.getEmployeesByDepartment = getEmployeesByDepartment;
 const getEmployee = async (id) => {
     const employee = await employee_model_1.default.findOne({ where: { id } });
     if (!employee) {

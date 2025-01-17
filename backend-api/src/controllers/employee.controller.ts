@@ -1,12 +1,33 @@
 import { Request, Response } from "express";
 import * as employeeService from "../services/employee.service";
 
-export const getAllEmployee = async (req: Request, res: Response) => {
+interface AuthenticatedRequest extends Request {
+  departmentId?: number;
+}
+
+export const getAllEmployee = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
+
   try {
-    const { employees, totalEmployees, currentPage, totalPages } = await employeeService.getAllEmployee(page, limit);
-    res.status(200).json({ employees, totalEmployees, currentPage, totalPages });
+    const { departmentId } = req;
+    const { employees, totalEmployees } =
+      await employeeService.getEmployeesByDepartment(
+        departmentId as number,
+        page,
+        limit
+      );
+
+    // Calculate pagination values
+    const totalPages = Math.ceil(totalEmployees / limit);
+    const currentPage = page;
+
+    res
+      .status(200)
+      .json({ employees, totalEmployees, currentPage, totalPages });
   } catch (error: any) {
     res.status(500).send({ errorMessage: error.message });
   }

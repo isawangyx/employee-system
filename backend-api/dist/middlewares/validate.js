@@ -9,7 +9,7 @@ const validateEmployee = (req, res, next) => {
     const schema = joi_1.default.object({
         name: joi_1.default.string().required(),
         salary: joi_1.default.number().required(),
-        department: joi_1.default.string().valid("HR", "PS").required(),
+        departmentId: joi_1.default.number().required(),
     });
     const { error } = schema.validate(req.body);
     if (error) {

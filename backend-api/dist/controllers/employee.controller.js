@@ -39,8 +39,14 @@ const getAllEmployee = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     try {
-        const { employees, totalEmployees, currentPage, totalPages } = await employeeService.getAllEmployee(page, limit);
-        res.status(200).json({ employees, totalEmployees, currentPage, totalPages });
+        const { departmentId } = req;
+        const { employees, totalEmployees } = await employeeService.getEmployeesByDepartment(departmentId, page, limit);
+        // Calculate pagination values
+        const totalPages = Math.ceil(totalEmployees / limit);
+        const currentPage = page;
+        res
+            .status(200)
+            .json({ employees, totalEmployees, currentPage, totalPages });
     }
     catch (error) {
         res.status(500).send({ errorMessage: error.message });

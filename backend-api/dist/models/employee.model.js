@@ -8,8 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
+const department_model_1 = __importDefault(require("./department.model"));
 let Employee = class Employee extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -35,11 +39,16 @@ __decorate([
     __metadata("design:type", Number)
 ], Employee.prototype, "salary", void 0);
 __decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => department_model_1.default),
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.ENUM("HR", "PS"),
+        type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
+], Employee.prototype, "departmentId", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => department_model_1.default),
+    __metadata("design:type", department_model_1.default)
 ], Employee.prototype, "department", void 0);
 __decorate([
     sequelize_typescript_1.CreatedAt,
