@@ -1,5 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+
+console.log(process.env.JWT_SECRET_KEY);
 
 interface Payload {
   userId: number;
@@ -30,9 +34,10 @@ class Authentication {
       username,
       departmentId,
     };
-    const option = { expiresIn: process.env.JWT_EXPIRES_IN };
-
-    return jwt.sign(payload, secretKey, option);
+    const option = { expiresIn: process.env.JWT_EXPIRES_IN || "1h" };
+    const token = jwt.sign(payload, secretKey, option);
+    console.log(token);
+    return token;
   }
 
   public static validateToken(token: string): Payload | null {

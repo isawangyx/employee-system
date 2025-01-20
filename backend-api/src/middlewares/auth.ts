@@ -10,9 +10,10 @@ export const auth = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) : Promise<void> => {
+): Promise<void> => {
   // Retrieve token from cookies
-  const token = req.cookies?.auth;
+  const token = req.headers.authorization?.split(" ")[1];
+  console.log("Token:", token);
   if (!token) {
     res.status(401).json({ error: true, message: "No token provided!" });
     return;
@@ -30,6 +31,8 @@ export const auth = async (
         .status(401)
         .json({ error: true, message: "Invalid token or user not found!" });
     }
+
+    console.log("User found by token:", user);
 
     // Attach user and token to the request object
     req.user = user;

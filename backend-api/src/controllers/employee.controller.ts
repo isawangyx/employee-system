@@ -14,6 +14,7 @@ export const getAllEmployee = async (
 
   try {
     const { departmentId } = req;
+    console.log("Department ID:", departmentId);
     const { employees, totalEmployees } =
       await employeeService.getEmployeesByDepartment(
         departmentId as number,

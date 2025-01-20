@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
@@ -15,12 +15,20 @@ import {
   useDeleteEmployeeMutation,
 } from "../store/Employees/employeeApi";
 import { useMediaQuery } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { authApi } from "../store/Authentication/authApi";
 
 const EmployeeListPage = () => {
   const [searchParam, setSearchParam] = useSearchParams();
   const currentPage = Number(searchParam.get("page")) || 1;
   const employeesPerPage = 10;
-  const { data, isLoading, isError, error } = useGetEmployeesQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchEmployees,
+  } = useGetEmployeesQuery({
     page: currentPage,
   });
   const [deleteEmployee] = useDeleteEmployeeMutation();
@@ -29,14 +37,21 @@ const EmployeeListPage = () => {
     null
   );
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const employees = data?.employees || [];
   const totalPages = data?.totalPages || 1;
   const totalEmployees = data?.totalEmployees || 0;
   console.log(totalEmployees);
 
-
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+
+  const authToken = localStorage.getItem("authToken");
+  useEffect(() => {
+    if (authToken) {
+      refetchEmployees();
+    }
+  }, [authToken, refetchEmployees]);
 
   const handleOpenModal = (id: number) => {
     setSelectedEmployeeId(id);
@@ -75,7 +90,16 @@ const EmployeeListPage = () => {
     }
   };
 
-  const startEntry = (currentPage - 1) * employeesPerPage + 1;
+  const handleLogout = () => {
+    // Clear the auth token from localStorage or cookies
+    localStorage.removeItem("authToken");
+    alert("Logged out successfully!");
+    dispatch(authApi.util.resetApiState()); // Reset API state to clear cached data)
+    navigate("/login"); // Redirect to the login page
+  };
+
+  const startEntry =
+    totalEmployees > 0 ? (currentPage - 1) * employeesPerPage + 1 : 0;
   const endEntry = Math.min(currentPage * employeesPerPage, totalEmployees);
 
   if (isLoading) {
@@ -112,52 +136,46 @@ const EmployeeListPage = () => {
         <Typography variant="h4" color="white" fontWeight={600}>
           Employees
         </Typography>
-        {isSmallScreen ? (
-          <Box
-            onClick={() => navigate("/add-edit")}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "38px",
-              height: "38px",
-              borderRadius: "50%",
-              backgroundColor: "white",
-              color: "#223b63",
-              cursor: "pointer",
-              fontSize: "30px",
-            }}
-          >
-            +
-          </Box>
-        ) : (
-          <NavLink to="/add-edit">
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ padding: "12px" }}
-              startIcon={
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "50%",
-                    backgroundColor: "#fff",
-                    color: "#2f752f",
-                    fontSize: "16px",
-                  }}
-                >
-                  +
-                </span>
-              }
+        <Box display="flex" alignItems="center">
+          {isSmallScreen ? (
+            <Box
+              onClick={() => navigate("/add-edit")}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "38px",
+                height: "38px",
+                borderRadius: "50%",
+                backgroundColor: "white",
+                color: "#223b63",
+                cursor: "pointer",
+                fontSize: "30px",
+                marginRight: "10px",
+              }}
             >
-              Add Employee
-            </Button>
-          </NavLink>
-        )}
+              +
+            </Box>
+          ) : (
+            <NavLink to="/add-edit">
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ padding: "12px", marginRight: "10px" }}
+              >
+                Add Employee
+              </Button>
+            </NavLink>
+          )}
+          <Button
+            onClick={handleLogout}
+            variant="contained"
+            color="error"
+            sx={{ padding: "12px" }}
+          >
+            Logout
+          </Button>
+        </Box>
       </Grid2>
 
       <EmployeeList

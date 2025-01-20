@@ -16,17 +16,17 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 }) => {
   return (
     <Box sx={{ padding: 2 }}>
-    <Grid container spacing={2}>
-      {employees.map((employee) => (
-        <Grid item xs={12} sm={6} key={employee.id}>
-          <EmployeeCard
-            employee={employee}
-            onEdit={() => onEdit(employee.id)}
-            onDelete={() => onDelete(employee.id)}
-          />
-        </Grid>
-      ))}
-    </Grid>
+      <Grid container spacing={2}>
+        {employees.map((employee) => (
+          <Grid item xs={12} sm={6} key={employee.id}>
+            <EmployeeCard
+              employee={employee}
+              onEdit={() => onEdit(employee.id)}
+              onDelete={() => onDelete(employee.id)}
+            />
+          </Grid>
+        ))}
+      </Grid>
     </Box>
   );
 };

@@ -1,15 +1,15 @@
-import React from "react";
-import { Route, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({ component: Component, ...rest }) {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const token = localStorage.getItem("authToken");
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        token ? <Component {...props} /> : <Navigate to="/login" />
-      }
-    />
-  );
-}
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  return <>{children}</>;
+};
+
+export default ProtectedRoute;

@@ -31,12 +31,21 @@ const AddEditEmployeePage = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const departmentMap: Record<"HR" | "PS", number> = {
+    HR: 2,
+    PS: 3,
+  };
+
   useEffect(() => {
     if (id && employees) {
       const employee = employees.find((emp) => emp.id === Number(id));
       if (employee) {
         setName(employee.name);
-        setDepartment(employee.department);
+        setDepartment(
+          Object.entries(departmentMap).find(
+            ([, value]) => value === employee.departmentId
+          )?.[0] as "HR" | "PS" | ""
+        );
         setSalary(employee.salary.toString());
       }
     }
@@ -56,7 +65,7 @@ const AddEditEmployeePage = () => {
       setError("Salary must be a positive number.");
       return false;
     }
-    if (!["HR", "PS"].includes(department)) {
+    if (!department) {
       setError("Please select a valid department.");
       return false;
     }
@@ -68,17 +77,18 @@ const AddEditEmployeePage = () => {
     if (!validateFields()) return;
 
     try {
+      const departmentId = departmentMap[department as "HR" | "PS"];
       if (id) {
         await editEmployee({
           id: Number(id),
           name,
-          department: department as "HR" | "PS",
+          departmentId,
           salary: Number(salary),
         }).unwrap();
       } else {
         await addEmployee({
           name,
-          department: department as "HR" | "PS",
+          departmentId,
           salary: Number(salary),
         }).unwrap();
       }

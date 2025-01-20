@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const SECRET_KEY = process.env.JWT_SECRET_KEY || "your-secret-key";
 class AuthService {
     async register(userDetails) {
         const { username, password, departmentId } = userDetails;
@@ -24,6 +23,7 @@ class AuthService {
     }
     async login(username, password) {
         const user = await user_model_1.default.findOne({ where: { username } });
+        console.log(user);
         if (!user) {
             throw new Error("Auth failed, username not found");
         }
@@ -33,6 +33,7 @@ class AuthService {
         }
         const token = user.generateToken();
         await user.update({ token });
+        console.log(token);
         return { token, user };
     }
     async logout(user, token) {

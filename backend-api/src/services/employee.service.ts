@@ -24,6 +24,8 @@ export const getEmployeesByDepartment = async (
       offset,
     });
 
+  console.log(employees);
+
   return {
     employees,
     totalEmployees,

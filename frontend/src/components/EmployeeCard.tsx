@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
+import { Card, CardContent, IconButton, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Employee } from "../types/Employee";
@@ -26,16 +26,27 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
       }}
     >
       <CardContent>
-        <Typography variant="h5" component="div" color="#223b63" fontWeight={600} >
+        <div
+          style={{
+            fontSize: "1.25rem",
+            fontWeight: 600,
+            color: "#223b63",
+            marginBottom: "0.25rem",
+          }}
+        >
           {employee.name}
-        </Typography>
-        <Typography variant="body2" color="#223b63">
-          {employee.department}
-        </Typography>
-        <Typography variant="body1" color="#223b63">
-          ${employee.salary}
-        </Typography>
+        </div>
+        <div
+          style={{
+            fontWeight: 500,
+            color: "#223b63",
+          }}
+        >
+          {employee.departmentId === 2 ? "HR" : "PS"}
+        </div>
+        <div style={{ color: "#223b63" }}>${employee.salary}</div>
       </CardContent>
+
       <Box display="flex" alignItems="center">
         <IconButton sx={{ color: "#f0ca41" }} onClick={onEdit}>
           <EditIcon />

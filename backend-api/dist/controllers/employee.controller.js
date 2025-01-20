@@ -40,6 +40,7 @@ const getAllEmployee = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     try {
         const { departmentId } = req;
+        console.log("Department ID:", departmentId);
         const { employees, totalEmployees } = await employeeService.getEmployeesByDepartment(departmentId, page, limit);
         // Calculate pagination values
         const totalPages = Math.ceil(totalEmployees / limit);

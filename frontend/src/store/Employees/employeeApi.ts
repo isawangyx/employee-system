@@ -12,7 +12,16 @@ export const employeeApi = createApi({
   reducerPath: "employeeApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "",
+    credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
+
   tagTypes: ["Employees"],
   endpoints: (builder) => ({
     getEmployees: builder.query<PaginatedResponse, { page: number }>({

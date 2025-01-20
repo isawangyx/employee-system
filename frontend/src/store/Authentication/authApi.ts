@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 type UserCredentials = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -19,7 +19,16 @@ type AuthResponse = {
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080", // Replace with your actual backend base URL
+    baseUrl: "http://localhost:8080/auth",
+    credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("authToken");
+      console.log("Token from local storage:", token);
+      if (token) {
+        headers.set("Authorization", token);
+      }
+      return headers;
+    }
   }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, UserCredentials>({

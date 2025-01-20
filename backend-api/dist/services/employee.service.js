@@ -21,6 +21,7 @@ const getEmployeesByDepartment = async (departmentId, page = 1, limit = 10) => {
         limit,
         offset,
     });
+    console.log(employees);
     return {
         employees,
         totalEmployees,

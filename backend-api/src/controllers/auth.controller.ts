@@ -8,7 +8,10 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
     const { token, user } = await authService.login(username, password);
-    res.cookie("auth", token).json({ isAuth: true, user });
+
+    console.log("Received token:", token);
+
+    res.cookie("auth", token).json({ isAuth: true, token, user });
   } catch (error: any) {
     res.status(400).json({
       success: false,

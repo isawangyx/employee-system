@@ -1,8 +1,5 @@
 import User from "../models/user.model";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-
-const SECRET_KEY = process.env.JWT_SECRET_KEY || "your-secret-key";
 
 export class AuthService {
   async register(userDetails: any): Promise<User> {
@@ -30,6 +27,7 @@ export class AuthService {
   ): Promise<{ token: string; user: User }> {
     const user = await User.findOne({ where: { username } });
 
+    console.log(user);
     if (!user) {
       throw new Error("Auth failed, username not found");
     }
@@ -43,6 +41,7 @@ export class AuthService {
     const token = user.generateToken();
 
     await user.update({ token });
+    console.log(token);
 
     return { token, user };
   }
